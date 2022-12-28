@@ -29,7 +29,7 @@ def modify_transform_parameters(transform_parameters_directory, num_parameters):
 
 def elastix_batch_file(number_file, parameter, bf_correction=False):
     datadir = thispath.parent.parent / "data"
-    datadir_param = Path(thispath.parent.parent / Path("Elastix_batch_files") / parameter)
+    datadir_param = Path(thispath.parent.parent / Path("elastix") / 'parameters'/parameter)
     if bf_correction:
         images_files_train = [i for i in datadir.rglob("*.nii.gz") if "Training" in str(i)
                               and "seg" not in str(i)
@@ -48,12 +48,13 @@ def elastix_batch_file(number_file, parameter, bf_correction=False):
                        and "BFC" not in str(i)
                        and number_file in str(i)]
         directory_name = 'NoBFC_registration'
-
+    output_dir = Path(thispath.parent.parent / f"elastix/experiment_{parameter}_{directory_name}/elastix")
+    output_dir.mkdir(exist_ok=True, parents=True)
     parameters_files = [i for i in datadir_param.rglob("*.txt")]
     parameters_files = sorted(parameters_files, key=lambda i: str(i.stem))
-    Path(thispath.parent.parent / "Elastix_batch_files").mkdir(exist_ok=True, parents=True)
+    Path(thispath.parent.parent / "elastix").mkdir(exist_ok=True, parents=True)
     with open(
-            thispath.parent.parent / f"Elastix_batch_files/elastix_{parameter}_{directory_name}_{fixed_brain[0].parent.stem}."
+            output_dir / f"elastix_{parameter}_{directory_name}_{fixed_brain[0].parent.stem}."
                                      f"{'bat' if 'win32' in platform else 'sh'}", 'w') as f:
         f.write(f"ECHO Registration of the brains in training folder into the fixed image {fixed_brain[0].parent.stem} "
                 f"with AFFINE+BSpline transformation \n\n")
@@ -75,11 +76,13 @@ def elastix_batch_file(number_file, parameter, bf_correction=False):
             f.write(registration)
         f.write(f"ECHO End registration of training brains into IBSR_{number_file} \n")
         f.write("PAUSE")
+    print(f"Elastix file for IBSR_{number_file} created at {output_dir},"
+          f" please run the elastix file before creating the transformix file.")
 
 
 def transformix_batch_file(number_file, parameter, bf_correction=False):
     datadir = thispath.parent.parent / "data"
-    datadir_param = Path(thispath.parent.parent / Path("Elastix_batch_files") / parameter)
+    datadir_param = Path(thispath.parent.parent / Path("elastix") / 'parameters'/parameter)
     parameters_files = [i for i in datadir_param.rglob("*.txt")]
     number_parameters = len(parameters_files)
     images_files_train = [i for i in datadir.rglob("*seg.nii.gz") if "Training" in str(i)]
@@ -95,11 +98,13 @@ def transformix_batch_file(number_file, parameter, bf_correction=False):
                                      f"/{fixed_brain[0].parent.parent.stem}" \
                                      f"/{fixed_brain[0].parent.stem}/brains")
         directory_name = 'NoBFC_registration'
+    output_dir = Path(thispath.parent.parent / f"elastix/experiment_{parameter}_{directory_name}/transformix")
+    output_dir.mkdir(exist_ok=True, parents=True)
     # Modifying the TransformParameters.x.txt files
     # for train_file in images_files_train:
     #     modify_transform_parameters(Path(transform_param_dir / train_file.parent.stem), number_parameters)
     with open(
-            thispath.parent.parent / f"Elastix_batch_files/transformix_{parameter}_{directory_name}_{fixed_brain[0].parent.stem}."
+            output_dir / f"transformix_{parameter}_{directory_name}_{fixed_brain[0].parent.stem}."
                                      f"{'bat' if 'win32' in platform else 'sh'}", 'w') as f:
         f.write("ECHO Transformix at work \n\n")
         for train_file in images_files_train:
@@ -119,7 +124,7 @@ def transformix_batch_file(number_file, parameter, bf_correction=False):
             f.write(registration)
         f.write(f"ECHO End registration of training labels into IBSR_{number_file} \n")
         f.write("PAUSE")
-
+    print(f'Transformix file for IBSR_{number_file} segmentation created at {output_dir}')
 
 @click.command()
 @click.option(
@@ -152,8 +157,6 @@ def main(batch_type, set_option, bfc, parameter):
         patient_number = patient.split('_')[1]
         if batch_type == 'elastix':
             elastix_batch_file(patient_number, parameter=parameter, bf_correction=bfc)
-            print(f"Elastix file for {patient} created,"
-                  f" please run the elastix file before creating the transformix file.")
         if batch_type == 'transformix':
             transformix_batch_file(patient_number, parameter=parameter, bf_correction=bfc)
 

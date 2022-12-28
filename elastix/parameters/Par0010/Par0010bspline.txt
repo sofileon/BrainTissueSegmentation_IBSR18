@@ -31,7 +31,7 @@
 (WriteResultImageAfterEachResolution "false") 
 (ShowExactMetricValue "false")
 (WriteResultImage "true")
-(ResultImageFormat "nii")
+(ResultImageFormat "nii.gz")
 
 //Maximum number of iterations in each resolution level:
 (MaximumNumberOfIterations 2000 ) 
