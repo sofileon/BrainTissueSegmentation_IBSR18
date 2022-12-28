@@ -1,5 +1,6 @@
 from pathlib import Path
 from sys import platform
+import numpy as np
 import click
 
 thispath = Path(__file__).resolve()
@@ -14,7 +15,7 @@ def modify_transform_parameters(transform_parameters_directory, num_parameters):
                             f"{transform_parameters_directory.parent.parent.parent.parent.stem}_"
                             f"{transform_parameters_directory.parent.parent.parent.parent.parent.stem}_"
                             f"{transform_parameters_directory.parent.parent.stem}."
-                            f"{'bat' if 'win32' in platform else 'sh'} correctly. ")
+                            f"{'bat' if 'win32' in platform else 'sh'} beforehand. ")
         else:
             with open(transform_parameters_file, 'r') as f:
                 lines = f.readlines()
@@ -124,30 +125,37 @@ def transformix_batch_file(number_file, parameter, bf_correction=False):
 @click.option(
     "--batch_type",
     default="elastix",
-    help="Chose to create an elastix or transformix file"
+    help="Chose to create an elastix or transformix file; elastix or transformix"
 )
 @click.option(
-    "--patient_number",
-    help="Choose into which patient all the training brains are going to be registered to"
+    "--set_option",
+    default="Validation",
+    help="Choose which dataset will be used to register all the training brains; Validation or Test"
 )
 @click.option(
     "--bfc",
     default=False,
     help=
-    "Whether to perform the "
+    "Whether to perform the registration with the Bias Field Corrected images"
 )
 @click.option(
     "--parameter",
     default="Par0010",
     help="name of the parameter folder; like Par0010, etc",
 )
-def main(batch_type, patient_number, bfc, parameter):
-
-    if batch_type == 'elastix':
-        elastix_batch_file(patient_number, parameter=parameter, bf_correction=bfc)
-        print("Run the elastix file before creating the transformix file.")
-    if batch_type == 'transformix':
-        transformix_batch_file(patient_number, parameter=parameter, bf_correction=bfc)
+def main(batch_type, set_option, bfc, parameter):
+    if set_option != 'Validation' and set_option != 'Test':
+        raise TypeError('Choose a valid set, either Validation or Test')
+    datadir = thispath.parent.parent / Path(f'data/{set_option}_Set')
+    patients = [x.stem for x in datadir.iterdir() if x.is_dir()]
+    for patient in patients:
+        patient_number = patient.split('_')[1]
+        if batch_type == 'elastix':
+            elastix_batch_file(patient_number, parameter=parameter, bf_correction=bfc)
+            print(f"Elastix file for {patient} created,"
+                  f" please run the elastix file before creating the transformix file.")
+        if batch_type == 'transformix':
+            transformix_batch_file(patient_number, parameter=parameter, bf_correction=bfc)
 
 
 if __name__ == "__main__":
