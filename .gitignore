@@ -6,6 +6,7 @@ __pycache__/
 # Project directories to ignore
 # Directories with IBSR18 dataset
 data/*
+Elastix_batch_files/ *.bat
 
 
 
