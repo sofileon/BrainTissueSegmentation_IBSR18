@@ -5,9 +5,8 @@ __pycache__/
 
 # Project directories to ignore
 # Directories with IBSR18 dataset
-data/Test_Set
-data/Training_Set
-data/Validation_Set
+data/*
+
 
 
 # C extensions
