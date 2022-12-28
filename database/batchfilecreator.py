@@ -1,6 +1,5 @@
 from pathlib import Path
 from sys import platform
-import numpy as np
 import click
 
 thispath = Path(__file__).resolve()
@@ -97,13 +96,14 @@ def transformix_batch_file(number_file, parameter, bf_correction=False):
                                      f"/{fixed_brain[0].parent.stem}/brains")
         directory_name = 'NoBFC_registration'
     # Modifying the TransformParameters.x.txt files
-    for train_file in images_files_train:
-        modify_transform_parameters(Path(transform_param_dir / train_file.parent.stem), number_parameters)
+    # for train_file in images_files_train:
+    #     modify_transform_parameters(Path(transform_param_dir / train_file.parent.stem), number_parameters)
     with open(
             thispath.parent.parent / f"Elastix_batch_files/transformix_{parameter}_{directory_name}_{fixed_brain[0].parent.stem}."
                                      f"{'bat' if 'win32' in platform else 'sh'}", 'w') as f:
         f.write("ECHO Transformix at work \n\n")
         for train_file in images_files_train:
+            modify_transform_parameters(Path(transform_param_dir / train_file.parent.stem), number_parameters)
             output = Path(f"{fixed_brain[0].parent.parent.parent}/{directory_name}/{parameter}"
                           f"/{fixed_brain[0].parent.parent.stem}/{fixed_brain[0].parent.stem}/labels/{train_file.parent.stem}")
             param = Path(f"{transform_param_dir}/{train_file.parent.stem}/TransformParameters.{number_parameters-1}.txt")
