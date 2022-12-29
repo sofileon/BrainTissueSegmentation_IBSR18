@@ -30,10 +30,6 @@ def dsc_score(prediction, groundtruth):
     dice_gm_PRED = dc(gm_data_PRED, gm_data_gt)
     dice_csf_PRED = dc(csf_data_PRED, csf_data_gt)
 
-    dice = [dice_csf_PRED, dice_wm_PRED, dice_gm_PRED]
-
-    print(f"\nDice score wm: {dice_wm_PRED}")
-    print(f"Dice score gm: {dice_gm_PRED}")
-    print(f"Dice score csf: {dice_csf_PRED}\n")
+    dice = [dice_wm_PRED, dice_gm_PRED, dice_csf_PRED]
 
     return dice
