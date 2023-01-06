@@ -72,11 +72,13 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder):
 
     groundtruth = read_groundtruth()
     final_segmentations = []
+
     output_dir = Path(thispath / "metrics")
     output_dir.mkdir(exist_ok=True, parents=True)
     header = ["Patient", "DICE WM", "DICE GM", "DICE CSF"]
     csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_all.csv", "w", header)
-    for patient, labels in tqdm(zip(all_labels, all_labels.values()), desc=f"Segmenting brains"):
+
+    for patient, labels in tqdm(zip(all_labels, all_labels.values()), desc=f"Segmenting brains", total=len(all_labels)):
         segmentation = mode(labels, axis=0).mode[0]
         dice_per_tissue = dsc_score(segmentation, groundtruth[patient])
         writer = [patient, dice_per_tissue[0], dice_per_tissue[1], dice_per_tissue[2]]
