@@ -1,6 +1,9 @@
 import csv
 from pathlib import Path
-thispath = Path(__file__).resolve()
+import numpy as np
+import nibabel as nib
+
+thispath = Path.cwd().resolve()
 
 
 def csv_writer(file_path, name, action, data):
@@ -21,3 +24,17 @@ def csv_writer(file_path, name, action, data):
         writer = csv.writer(f)
         writer.writerow(data)
         f.close()
+
+
+def read_groundtruth():
+    datadir = Path(thispath / "data")
+    validation_groundtruth = [i for i in datadir.rglob("*.nii.gz") if "Validation_Set" in str(i)
+                   and "seg" in str(i)]
+
+    groundtruth = {}
+    for seg_path in validation_groundtruth:
+        segmentation = nib.load(seg_path)
+        segmentation = segmentation.get_fdata()[:, :, :, 0].astype(np.int8)
+        groundtruth[seg_path.parent.stem] = segmentation
+
+    return groundtruth
