@@ -13,7 +13,7 @@ def multiatlas_majority_voting_one(brain_patient, registration_folder, parameter
 
     datadir = thispath / "data"
 
-    registered_image_for_one = [i for i in datadir.rglob("*.nii") if registration_folder in str(i)
+    registered_image_for_one = [i for i in datadir.rglob("*.nii.gz") if registration_folder in str(i)
                                 and parameter_folder
                                 and brain_patient in str(i)
                                 and "labels" in str(i)]
@@ -41,7 +41,7 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder):
 
     datadir = thispath / "data"
 
-    registered_images_train = [i for i in datadir.rglob("*.nii") if registration_folder in str(i)
+    registered_images_train = [i for i in datadir.rglob("*.nii.gz") if registration_folder in str(i)
                           and parameter_folder
                           and "labels" in str(i)]
 
