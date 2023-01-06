@@ -6,7 +6,7 @@ from utils import dsc_score, read_groundtruth
 from scipy.stats import mode
 from tqdm import tqdm
 from utils import csv_writer
-
+import ants
 thispath = Path.cwd().resolve()
 
 
@@ -39,7 +39,7 @@ def multiatlas_majority_voting_one(brain_patient, registration_folder, parameter
     dice_per_tissue = dsc_score(final_segmentation, groundtruth[brain_patient])
 
     writer = [brain_patient, dice_per_tissue[0], dice_per_tissue[1], dice_per_tissue[2]]
-    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_one_{brain_patient}.csv", "w", writer)
+    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_one_{brain_patient}.csv", "a", writer)
 
     print(f"\nDICE score {brain_patient}")
     print(f"WM: {dice_per_tissue[0]}")
@@ -82,7 +82,7 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder):
         segmentation = mode(labels, axis=0).mode[0]
         dice_per_tissue = dsc_score(segmentation, groundtruth[patient])
         writer = [patient, dice_per_tissue[0], dice_per_tissue[1], dice_per_tissue[2]]
-        csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_all.csv", "w", writer)
+        csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_all.csv", "a", writer)
 
         print(f"\nDICE score {patient}")
         print(f"WM: {dice_per_tissue[0]}")
