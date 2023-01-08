@@ -7,15 +7,16 @@ from scipy.stats import mode
 from tqdm import tqdm
 from utils import csv_writer
 import time
+import datetime
 
 thispath = Path.cwd().resolve()
 
 
 def multiatlas_majority_voting_one(brain_patient, registration_folder, parameter_folder):
-
+    start = time.time()
     datadir = thispath / "data"
 
-    registered_image_for_one = [i for i in datadir.rglob("*.nii") if registration_folder in str(i)
+    registered_image_for_one = [i for i in datadir.rglob("*.nii.gz") if registration_folder in str(i)
                                 and parameter_folder
                                 and brain_patient in str(i)
                                 and "labels" in str(i)]
@@ -47,9 +48,9 @@ def multiatlas_majority_voting_one(brain_patient, registration_folder, parameter
     print(f"GM: {dice_per_tissue[1]}")
     print(f"CSF: {dice_per_tissue[2]}\n")
 
-    final_time = time.time()
-    writer = ["Time", final_time]
-    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_one_{brain_patient}.csv", "a", writer)
+    final_time = time.time()-start
+    writer = ["Time", "{:0>8}".format(str(datetime.timedelta(seconds=final_time)))]
+    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voting_one_{brain_patient}.csv", "a", writer)
 
 
 def multiatlas_majority_voting_all(registration_folder, parameter_folder):
@@ -98,8 +99,8 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder):
 
         final_segmentations.append(segmentation)
 
-    final_time = time.time()
-    writer = ["Time", final_time]
+    final_time = time.time()-start
+    writer = ["Time", "{:0>8}".format(str(datetime.timedelta(seconds=final_time)))]
     csv_writer(output_dir, f"{registration_folder}_{registered_image.parent.parent.parent.parent.parent.stem}"
                            f"_multiAtlas_majority_voating_all.csv", "a", writer)
 

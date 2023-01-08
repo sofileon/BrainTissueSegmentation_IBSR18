@@ -29,8 +29,7 @@ def csv_writer(file_path, name, action, data):
 def read_groundtruth():
     datadir = Path(thispath / "data")
     validation_groundtruth = [i for i in datadir.rglob("*.nii.gz") if "Validation_Set" in str(i)
-                   and "seg" in str(i)]
-
+                              and "seg" in str(i)]
     groundtruth = {}
     for seg_path in validation_groundtruth:
         segmentation = nib.load(seg_path)
