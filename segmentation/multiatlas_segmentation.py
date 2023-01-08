@@ -81,13 +81,15 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder):
     output_dir = Path(thispath / "metrics")
     output_dir.mkdir(exist_ok=True, parents=True)
     header = ["Patient", "DICE WM", "DICE GM", "DICE CSF"]
-    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_all.csv", "w", header)
+    csv_writer(output_dir, f"{registration_folder}_{registered_image.parent.parent.parent.parent.parent.stem}"
+                           f"_multiAtlas_majority_voating_all.csv", "w", header)
 
     for patient, labels in tqdm(zip(all_labels, all_labels.values()), desc=f"Segmenting brains", total=len(all_labels)):
         segmentation = mode(labels, axis=0).mode[0]
         dice_per_tissue = dsc_score(segmentation, groundtruth[patient])
         writer = [patient, dice_per_tissue[0], dice_per_tissue[1], dice_per_tissue[2]]
-        csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_all.csv", "a", writer)
+        csv_writer(output_dir, f"{registration_folder}_{registered_image.parent.parent.parent.parent.parent.stem}"
+                               f"_multiAtlas_majority_voating_all.csv", "a", writer)
 
         print(f"\nDICE score {patient}")
         print(f"WM: {dice_per_tissue[0]}")
@@ -98,7 +100,8 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder):
 
     final_time = time.time()
     writer = ["Time", final_time]
-    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_all.csv", "a", writer)
+    csv_writer(output_dir, f"{registration_folder}_{registered_image.parent.parent.parent.parent.parent.stem}"
+                           f"_multiAtlas_majority_voating_all.csv", "a", writer)
 
 @click.command()
 @click.option(
