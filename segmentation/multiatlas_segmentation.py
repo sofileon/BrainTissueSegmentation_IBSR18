@@ -6,7 +6,8 @@ from utils import dsc_score, read_groundtruth
 from scipy.stats import mode
 from tqdm import tqdm
 from utils import csv_writer
-import ants
+import time
+
 thispath = Path.cwd().resolve()
 
 
@@ -45,6 +46,10 @@ def multiatlas_majority_voting_one(brain_patient, registration_folder, parameter
     print(f"WM: {dice_per_tissue[0]}")
     print(f"GM: {dice_per_tissue[1]}")
     print(f"CSF: {dice_per_tissue[2]}\n")
+
+    final_time = time.time()
+    writer = ["Time", final_time]
+    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_one_{brain_patient}.csv", "a", writer)
 
 
 def multiatlas_majority_voting_all(registration_folder, parameter_folder):
@@ -91,6 +96,9 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder):
 
         final_segmentations.append(segmentation)
 
+    final_time = time.time()
+    writer = ["Time", final_time]
+    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_all.csv", "a", writer)
 
 @click.command()
 @click.option(
