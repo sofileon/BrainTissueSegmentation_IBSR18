@@ -1,10 +1,12 @@
 from database import metadata_creation
-from pathlib import Path
+from preprocessing import bias_field_correction, normalization
 
 
 if __name__ == "__main__":
-        #   To be run only once
+    # Metadata creation
     metadata_creation()
 
-
+    # Preprocessing
+    bias_field_correction('Test')
+    normalization('Test')
 

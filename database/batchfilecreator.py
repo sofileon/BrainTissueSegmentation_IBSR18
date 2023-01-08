@@ -27,27 +27,20 @@ def modify_transform_parameters(transform_parameters_directory, num_parameters):
                 f.writelines(lines)
 
 
-def elastix_batch_file(number_file, parameter, bf_correction=False):
+def elastix_batch_file(number_file, parameter):
     datadir = thispath.parent.parent / "data"
     datadir_param = Path(thispath.parent.parent / Path("elastix") / 'parameters'/parameter)
-    if bf_correction:
-        images_files_train = [i for i in datadir.rglob("*.nii.gz") if "Training" in str(i)
-                              and "seg" not in str(i)
-                              and "BFC" in str(i)
-                              and 'registration' not in str(i)]
-        fixed_brain = [i for i in datadir.rglob("*.nii.gz") if "seg" not in str(i)
-                       and "BFC" in str(i)
-                       and number_file in str(i)
-                       and 'registration' not in str(i)]
-        directory_name = 'BFC_registration'
-    else:
-        images_files_train = [i for i in datadir.rglob("*.nii.gz") if "Training" in str(i)
-                              and "seg" not in str(i)
-                              and "BFC" not in str(i)]
-        fixed_brain = [i for i in datadir.rglob("*.nii.gz") if "seg" not in str(i)
-                       and "BFC" not in str(i)
-                       and number_file in str(i)]
-        directory_name = 'NoBFC_registration'
+
+    images_files_train = [i for i in datadir.rglob("*.nii.gz") if "Training" in str(i)
+                          and "seg" not in str(i)
+                          and "Normalized" in str(i)
+                          and 'registration' not in str(i)]
+    fixed_brain = [i for i in datadir.rglob("*.nii.gz") if "seg" not in str(i)
+                   and "BFC" in str(i)
+                   and number_file in str(i)
+                   and 'registration' not in str(i)]
+    directory_name = 'BFC_registration'
+
     output_dir = Path(thispath.parent.parent / f"elastix/experiment_{parameter}_{directory_name}/elastix")
     output_dir.mkdir(exist_ok=True, parents=True)
     parameters_files = [i for i in datadir_param.rglob("*.txt")]
@@ -80,24 +73,19 @@ def elastix_batch_file(number_file, parameter, bf_correction=False):
           f" please run the elastix file before creating the transformix file.")
 
 
-def transformix_batch_file(number_file, parameter, bf_correction=False):
+def transformix_batch_file(number_file, parameter):
     datadir = thispath.parent.parent / "data"
     datadir_param = Path(thispath.parent.parent / Path("elastix") / 'parameters'/parameter)
     parameters_files = [i for i in datadir_param.rglob("*.txt")]
     number_parameters = len(parameters_files)
     images_files_train = [i for i in datadir.rglob("*seg.nii.gz") if "Training" in str(i)]
     fixed_brain = [i for i in datadir.rglob("*seg.nii.gz") if number_file in str(i)]
-    if bf_correction:
-        transform_param_dir = Path(thispath.parent.parent / f"data/BFC_registration/{parameter}"
-                                                            f"/{fixed_brain[0].parent.parent.stem}" \
-                                                            f"/{fixed_brain[0].parent.stem}/brains")
-        directory_name = 'BFC_registration'
-    else:
-        transform_param_dir = Path(
-            thispath.parent.parent / f"data/NoBFC_registration/{parameter}"
-                                     f"/{fixed_brain[0].parent.parent.stem}" \
-                                     f"/{fixed_brain[0].parent.stem}/brains")
-        directory_name = 'NoBFC_registration'
+
+    transform_param_dir = Path(thispath.parent.parent / f"data/BFC_registration/{parameter}"
+                                                        f"/{fixed_brain[0].parent.parent.stem}" \
+                                                        f"/{fixed_brain[0].parent.stem}/brains")
+    directory_name = 'BFC_registration'
+
     output_dir = Path(thispath.parent.parent / f"elastix/experiment_{parameter}_{directory_name}/transformix")
     output_dir.mkdir(exist_ok=True, parents=True)
     # Modifying the TransformParameters.x.txt files
@@ -126,6 +114,7 @@ def transformix_batch_file(number_file, parameter, bf_correction=False):
         f.write("PAUSE")
     print(f'Transformix file for IBSR_{number_file} segmentation created at {output_dir}')
 
+
 @click.command()
 @click.option(
     "--batch_type",
@@ -138,17 +127,11 @@ def transformix_batch_file(number_file, parameter, bf_correction=False):
     help="Choose which dataset will be used to register all the training brains; Validation or Test"
 )
 @click.option(
-    "--bfc",
-    default=False,
-    help=
-    "Whether to perform the registration with the Bias Field Corrected images"
-)
-@click.option(
     "--parameter",
     default="Par0010",
     help="name of the parameter folder; like Par0010, etc",
 )
-def main(batch_type, set_option, bfc, parameter):
+def main(batch_type, set_option, parameter):
     if set_option != 'Validation' and set_option != 'Test':
         raise TypeError('Choose a valid set, either Validation or Test')
     datadir = thispath.parent.parent / Path(f'data/{set_option}_Set')
@@ -156,9 +139,9 @@ def main(batch_type, set_option, bfc, parameter):
     for patient in patients:
         patient_number = patient.split('_')[1]
         if batch_type == 'elastix':
-            elastix_batch_file(patient_number, parameter=parameter, bf_correction=bfc)
+            elastix_batch_file(patient_number, parameter=parameter)
         if batch_type == 'transformix':
-            transformix_batch_file(patient_number, parameter=parameter, bf_correction=bfc)
+            transformix_batch_file(patient_number, parameter=parameter)
 
 
 if __name__ == "__main__":

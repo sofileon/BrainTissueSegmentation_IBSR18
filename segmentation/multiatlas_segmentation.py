@@ -57,7 +57,7 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder):
     start = time.time()
     datadir = thispath / "data"
 
-    registered_images_train = [i for i in datadir.rglob("*.nii") if registration_folder in str(i)
+    registered_images_train = [i for i in datadir.rglob("*.nii.gz") if registration_folder in str(i)
                           and parameter_folder
                           and "labels" in str(i)]
 
