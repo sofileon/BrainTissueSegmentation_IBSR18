@@ -54,7 +54,7 @@ def multiatlas_majority_voting_one(brain_patient, registration_folder, parameter
 
 
 def multiatlas_majority_voting_all(registration_folder, parameter_folder):
-
+    start = time.time()
     datadir = thispath / "data"
 
     registered_images_train = [i for i in datadir.rglob("*.nii") if registration_folder in str(i)
