@@ -36,7 +36,7 @@ def multiatlas_majority_voting_one(brain_patient, registration_folder, parameter
     output_dir = Path(thispath / "metrics")
     output_dir.mkdir(exist_ok=True, parents=True)
     header = ["Patient", "DICE WM", "DICE GM", "DICE CSF", "HD WM", "HD GM", "HD CSF", "RAVD WM", "RAVD GM", "RAVD CSF"]
-    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_one_{brain_patient}.csv", "w", header)
+    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voting_one_{brain_patient}.csv", "w", header)
 
     dice_per_tissue, hd_per_tissue, ravd_per_tissue = metrics_4_segmentation(final_segmentation,
                                                                              groundtruth[brain_patient])
@@ -44,7 +44,7 @@ def multiatlas_majority_voting_one(brain_patient, registration_folder, parameter
     writer = [brain_patient, dice_per_tissue[0], dice_per_tissue[1], dice_per_tissue[2],
               hd_per_tissue[0], hd_per_tissue[1], hd_per_tissue[2],
               ravd_per_tissue[0], ravd_per_tissue[1], ravd_per_tissue[2]]
-    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voating_one_{brain_patient}.csv", "a", writer)
+    csv_writer(output_dir, f"{registration_folder}_multiAtlas_majority_voting_one_{brain_patient}.csv", "a", writer)
 
     final_time = time.time()-start
     writer = ["Time", "{:0>8}".format(str(datetime.timedelta(seconds=final_time)))]
@@ -81,13 +81,13 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder, test=F
         output_dir.mkdir(exist_ok=True, parents=True)
         header = ["Patient", "DICE WM", "DICE GM", "DICE CSF", "HD WM", "HD GM", "HD CSF"]
         csv_writer(output_dir, f"{registration_folder}_{parameter_folder}"
-                               f"_multiAtlas_majority_voating_all.csv", "w", header)
+                               f"_multiAtlas_majority_voting_all.csv", "w", header)
 
     for patient, labels in tqdm(zip(all_labels, all_labels.values()), desc=f"Segmenting brains", total=len(all_labels)):
         affine = labels[0].affine
         labels = [label.get_fdata().astype(np.int8) for label in labels]
         segmentation = mode(labels, axis=0).mode[0]
-        print(test)
+
         if test:
             seg_header = nib.Nifti1Header()
             segmentation_write = nib.Nifti1Image(segmentation, affine, seg_header)
@@ -102,12 +102,12 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder, test=F
                       ravd_per_tissue[0], ravd_per_tissue[1], ravd_per_tissue[2]]
 
             csv_writer(output_dir, f"{registration_folder}_{parameter_folder}"
-                                   f"_multiAtlas_majority_voating_all.csv", "a", writer)
+                                   f"_multiAtlas_majority_voting_all.csv", "a", writer)
 
     final_time = time.time()-start
     writer = ["Time", "{:0>8}".format(str(datetime.timedelta(seconds=final_time)))]
     csv_writer(output_dir, f"{registration_folder}_{parameter_folder}"
-                           f"_multiAtlas_majority_voating_all.csv", "a", writer)
+                           f"_multiAtlas_majority_voting_all.csv", "a", writer)
 
     print(f"DICE, HD, RAVD computed and saved in a {registration_folder}_{parameter_folder}"
           f"_multiAtlas_majority_voating_all.csv in {output_dir}")
