@@ -72,16 +72,8 @@ That will output *.nii.gz files with the final segmentations per patient in a fo
 ### Majority voting weighted by voxel spacing similarity
 Run the following line of code to perform the segmentation by using weighted majority voting on the Validation.
 ```
-python -m  segmentation.multiatlas_segmentation --parameter_folder Par0009 --registration_folder BFC_registration
+python -m segmentation.multiatlas_segmentation_weightedvoting 
 
 ```
 That will output a *.csv file located in `cwd()\metrics` with the 3 different evaluation metrics per tissue DSC,
 HD and RAVD.
-
-Run the following line of code to perform the segmentation by using hard majority voting on the Test if all the previous
-are run to build the multi-atlas for the Test set from the Training set.
-```
-python -m  segmentation.multiatlas_segmentation --parameter_folder Par0009 --test_boolean True
- --registration_folder BFC_registration
-```
-That will output *.nii.gz files with the final segmentations per patient in a folder call `cwd()\Final_segmentations`
