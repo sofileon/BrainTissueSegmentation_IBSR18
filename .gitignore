@@ -1,3 +1,10 @@
+# Project directories to ignore
+# Directories with IBSR18 dataset
+data/*
+Elastix_batch_files/*.bat
+trash.py
+metrics/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
