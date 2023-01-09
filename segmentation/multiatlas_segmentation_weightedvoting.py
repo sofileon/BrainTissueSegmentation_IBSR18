@@ -14,9 +14,18 @@ thispath = Path(__file__).resolve()
 def multiatlas_weighted_majority_voting_all(registration_folder, parameter_folder, test=False):
     start = time.time()
     datadir = thispath.parent.parent / "data"
-    registered_images_train = [i for i in datadir.rglob("*.nii.gz") if registration_folder in str(i)
-                               and parameter_folder
-                               and "labels" in str(i)]
+    if test:
+
+        registered_images_train = [i for i in datadir.rglob("*.nii.gz") if registration_folder in str(i)
+                                   and parameter_folder
+                                   and "Test" in str(i)
+                                   and "labels" in str(i)]
+    else:
+
+        registered_images_train = [i for i in datadir.rglob("*.nii.gz") if registration_folder in str(i)
+                                   and parameter_folder
+                                   and "Validation" in str(i)
+                                   and "labels" in str(i)]
     registered_images_for_all = [
         registered_images_train[i: i + 10] for i in range(0, len(registered_images_train), 10)
     ]
@@ -110,7 +119,7 @@ def multiatlas_weighted_majority_voting_all(registration_folder, parameter_folde
 )
 @click.option(
     "--parameter_folder",
-    default="Par0010",
+    default="Par0009",
     help=
     "Name of the folder with the parameters used in the elastix registration for the registration folder selected",
 )
