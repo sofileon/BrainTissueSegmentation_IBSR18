@@ -36,12 +36,13 @@ def normalization(dataset_choice):
     brains = metadata['Name'].loc[metadata['Dataset'] == f'{dataset_choice}_Set'].tolist()
 
     for i, brain in zip(tqdm(range(len(brains)), desc=f'{dataset_choice} Normalization: '), brains):
-        input_brain = sitk.ReadImage(datadir/f'{dataset_choice}_Set/{brain}/BFC_{brain}.nii.gz', sitk.sitkFloat32)
-        input_brain = sitk.GetArrayFromImage(input_brain)
+        input_brain_sitk = sitk.ReadImage(datadir/f'{dataset_choice}_Set/{brain}/BFC_{brain}.nii.gz', sitk.sitkFloat32)
+        input_brain = sitk.GetArrayFromImage(input_brain_sitk)
         normalized_brain = exposure.rescale_intensity(input_brain,
                                                       in_range="image",
                                                       out_range=(0, 255))
-        normalized_brain = sitk.GetImageFromArray(np.asarray(normalized_brain))
+        normalized_brain = sitk.GetImageFromArray(normalized_brain)
+        normalized_brain.CopyInformation(input_brain_sitk)
         sitk.WriteImage(
             normalized_brain, datadir/f"{dataset_choice}_Set/{brain}/Normalized_{brain}.nii.gz"
         )
