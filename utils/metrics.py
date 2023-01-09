@@ -1,7 +1,7 @@
 import numpy as np
-from medpy.metric.binary import dc
+from medpy.metric.binary import dc, hd
 
-def dsc_score(prediction, groundtruth):
+def metrics_dice_hd(prediction, groundtruth):
     """
     Dice score for brain volumens to the labels csf, wm and gm.
     :param prediction: segmentation predicted
@@ -30,6 +30,11 @@ def dsc_score(prediction, groundtruth):
     dice_gm_PRED = dc(gm_data_PRED, gm_data_gt)
     dice_csf_PRED = dc(csf_data_PRED, csf_data_gt)
 
-    dice = [dice_wm_PRED, dice_gm_PRED, dice_csf_PRED]
+    hd_wm_PRED = hd(wm_data_PRED, wm_data_gt)
+    hd_gm_PRED = hd(gm_data_PRED, gm_data_gt)
+    hd_csf_PRED = hd(csf_data_PRED, csf_data_gt)
 
-    return dice
+    dice = [dice_wm_PRED, dice_gm_PRED, dice_csf_PRED]
+    hausdorff_distance = [hd_wm_PRED, hd_gm_PRED, hd_csf_PRED]
+
+    return dice, hausdorff_distance

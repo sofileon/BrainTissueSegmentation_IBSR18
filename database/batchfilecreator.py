@@ -36,8 +36,8 @@ def elastix_batch_file(number_file, parameter):
                           and "Normalized" in str(i)
                           and 'registration' not in str(i)]
     fixed_brain = [i for i in datadir.rglob("*.nii.gz") if "seg" not in str(i)
-                   and "BFC" in str(i)
                    and number_file in str(i)
+                   and "Normalized" in str(i)
                    and 'registration' not in str(i)]
     directory_name = 'BFC_registration'
 
