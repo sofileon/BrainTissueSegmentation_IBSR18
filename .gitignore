@@ -4,6 +4,7 @@ data/*
 Elastix_batch_files/*.bat
 trash.py
 metrics/*
+Final_segmentations/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
