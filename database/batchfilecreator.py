@@ -80,7 +80,7 @@ def transformix_batch_file(number_file, parameter):
     number_parameters = len(parameters_files)
     images_files_train = [i for i in datadir.rglob("*seg.nii.gz") if "Training" in str(i)]
     fixed_brain = [i for i in datadir.rglob("Normalized*.nii.gz") if number_file in str(i)]
-    print(fixed_brain[0])
+
     transform_param_dir = Path(thispath.parent.parent / f"data/BFC_registration/{parameter}"
                                                         f"/{fixed_brain[0].parent.parent.stem}" \
                                                         f"/{fixed_brain[0].parent.stem}/brains")
