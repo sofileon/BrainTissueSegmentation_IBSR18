@@ -128,7 +128,7 @@ def transformix_batch_file(number_file, parameter):
 )
 @click.option(
     "--parameter",
-    default="Par0010",
+    default="Par0009",
     help="name of the parameter folder; like Par0010, etc",
 )
 def main(batch_type, set_option, parameter):
