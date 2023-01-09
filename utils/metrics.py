@@ -1,7 +1,8 @@
 import numpy as np
-from medpy.metric.binary import dc, hd
+from medpy.metric.binary import dc, hd, ravd
 
-def metrics_dice_hd(prediction, groundtruth):
+
+def metrics_4_segmentation(prediction, groundtruth):
     """
     Dice score for brain volumens to the labels csf, wm and gm.
     :param prediction: segmentation predicted
@@ -18,23 +19,28 @@ def metrics_dice_hd(prediction, groundtruth):
     gm_data_gt[gm_data_gt != 2] = 0
     csf_data_gt[csf_data_gt != 1] = 0
 
-    wm_data_PRED = prediction.copy()
-    gm_data_PRED = prediction.copy()
-    csf_data_PRED = prediction.copy()
+    wm_data_pred = prediction.copy()
+    gm_data_pred = prediction.copy()
+    csf_data_pred = prediction.copy()
 
-    wm_data_PRED[prediction != 3] = 0
-    gm_data_PRED[prediction != 2] = 0
-    csf_data_PRED[prediction != 1] = 0
+    wm_data_pred[prediction != 3] = 0
+    gm_data_pred[prediction != 2] = 0
+    csf_data_pred[prediction != 1] = 0
 
-    dice_wm_PRED = dc(wm_data_PRED, wm_data_gt)
-    dice_gm_PRED = dc(gm_data_PRED, gm_data_gt)
-    dice_csf_PRED = dc(csf_data_PRED, csf_data_gt)
+    dice_wm_pred = dc(wm_data_pred, wm_data_gt)
+    dice_gm_pred = dc(gm_data_pred, gm_data_gt)
+    dice_csf_pred = dc(csf_data_pred, csf_data_gt)
 
-    hd_wm_PRED = hd(wm_data_PRED, wm_data_gt)
-    hd_gm_PRED = hd(gm_data_PRED, gm_data_gt)
-    hd_csf_PRED = hd(csf_data_PRED, csf_data_gt)
+    hd_wm_pred = hd(wm_data_pred, wm_data_gt)
+    hd_gm_pred = hd(gm_data_pred, gm_data_gt)
+    hd_csf_pred = hd(csf_data_pred, csf_data_gt)
 
-    dice = [dice_wm_PRED, dice_gm_PRED, dice_csf_PRED]
-    hausdorff_distance = [hd_wm_PRED, hd_gm_PRED, hd_csf_PRED]
+    ravd_wm_pred = ravd(wm_data_pred, wm_data_gt)
+    ravd_gm_pred = ravd(gm_data_pred, gm_data_gt)
+    ravd_csf_pred = ravd(csf_data_pred, csf_data_gt)
 
-    return dice, hausdorff_distance
+    dice = [dice_wm_pred, dice_gm_pred, dice_csf_pred]
+    hausdorff_distance = [hd_wm_pred, hd_gm_pred, hd_csf_pred]
+    volume_difference = [ravd_wm_pred, ravd_gm_pred, ravd_csf_pred]
+
+    return dice, hausdorff_distance, volume_difference

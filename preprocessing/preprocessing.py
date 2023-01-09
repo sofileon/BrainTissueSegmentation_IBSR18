@@ -49,9 +49,9 @@ def normalization(dataset_choice):
 
 
 if __name__ == "__main__":
-    bias_field_correction('Training')
-    bias_field_correction('Validation')
-    bias_field_correction('Test')
+    # bias_field_correction('Training')
+    # bias_field_correction('Validation')
+    # bias_field_correction('Test')
     normalization('Training')
     normalization('Validation')
     normalization('Test')
