@@ -79,7 +79,8 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder, test=F
     if not test:
         groundtruth = read_groundtruth()
         output_dir.mkdir(exist_ok=True, parents=True)
-        header = ["Patient", "DICE WM", "DICE GM", "DICE CSF", "HD WM", "HD GM", "HD CSF"]
+        header = ["Patient", "DICE WM", "DICE GM", "DICE CSF", "HD WM", "HD GM", "HD CSF", "RAVD WM", "RAVD GM",
+                  "RAVD CSF"]
         csv_writer(output_dir, f"{registration_folder}_{parameter_folder}"
                                f"_multiAtlas_majority_voting_all.csv", "w", header)
 
