@@ -12,9 +12,18 @@ def metadata_creation():
     :return:
     """
     datadir = thispath.parent.parent/"data"
-    images_files_train = [i for i in datadir.rglob("*.nii.gz") if "Training" in str(i) and "seg" not in str(i)]
-    images_files_validation = [i for i in datadir.rglob("*.nii.gz") if "Validation" in str(i) and "seg" not in str(i)]
-    images_files_test = [i for i in datadir.rglob("*.nii.gz") if "Test" in str(i) and "seg" not in str(i)]
+    images_files_train = [i for i in datadir.rglob("*.nii.gz") if "Training" in str(i)
+                          and "seg" not in str(i)
+                          and 'BFC' not in str(i)
+                          and 'Normalized' not in str(i)]
+    images_files_validation = [i for i in datadir.rglob("*.nii.gz") if "Validation" in str(i)
+                               and "seg" not in str(i)
+                               and 'BFC' not in str(i)
+                               and 'Normalized' not in str(i)]
+    images_files_test = [i for i in datadir.rglob("*.nii.gz") if "Test" in str(i)
+                         and "seg" not in str(i)
+                         and 'BFC' not in str(i)
+                         and 'Normalized' not in str(i)]
     header = ['Name', 'Dataset', 'Original Size', 'Voxel Size (xyz)',
               'DataType','Minimum intensity (non-zero)', 'Maximum intensity']
     csv_writer(datadir, 'Metadata_IBSR18.csv', 'w', header)
