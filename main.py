@@ -6,7 +6,3 @@ if __name__ == "__main__":
     # Metadata creation
     metadata_creation()
 
-    # Preprocessing
-    bias_field_correction('Test')
-    normalization('Test')
-

@@ -58,10 +58,18 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder, test=F
     start = time.time()
     datadir = thispath / "data"
 
-    registered_images_train = [i for i in datadir.rglob("*.nii.gz") if registration_folder in str(i)
-                               and parameter_folder
-                               and "labels" in str(i)]
+    if test:
 
+        registered_images_train = [i for i in datadir.rglob("*.nii.gz") if registration_folder in str(i)
+                                   and parameter_folder
+                                   and "Test" in str(i)
+                                   and "labels" in str(i)]
+    else:
+
+        registered_images_train = [i for i in datadir.rglob("*.nii.gz") if registration_folder in str(i)
+                                   and parameter_folder
+                                   and "Validation" in str(i)
+                                   and "labels" in str(i)]
     registered_images_for_all = [
         registered_images_train[i: i+10] for i in range(0, len(registered_images_train), 10)
     ]
@@ -105,13 +113,14 @@ def multiatlas_majority_voting_all(registration_folder, parameter_folder, test=F
             csv_writer(output_dir, f"{registration_folder}_{parameter_folder}"
                                    f"_multiAtlas_majority_voting_all.csv", "a", writer)
 
-    final_time = time.time()-start
-    writer = ["Time", "{:0>8}".format(str(datetime.timedelta(seconds=final_time)))]
-    csv_writer(output_dir, f"{registration_folder}_{parameter_folder}"
-                           f"_multiAtlas_majority_voting_all.csv", "a", writer)
+    if not test:
+        final_time = time.time()-start
+        writer = ["Time", "{:0>8}".format(str(datetime.timedelta(seconds=final_time)))]
+        csv_writer(output_dir, f"{registration_folder}_{parameter_folder}"
+                               f"_multiAtlas_majority_voting_all.csv", "a", writer)
 
-    print(f"DICE, HD, RAVD computed and saved in a {registration_folder}_{parameter_folder}"
-          f"_multiAtlas_majority_voating_all.csv in {output_dir}")
+        print(f"DICE, HD, RAVD computed and saved in a {registration_folder}_{parameter_folder}"
+              f"_multiAtlas_majority_voating_all.csv in {output_dir}")
 
 
 @click.command()

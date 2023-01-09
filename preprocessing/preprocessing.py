@@ -2,7 +2,6 @@ from pathlib import Path
 import SimpleITK as sitk
 import pandas as pd
 from tqdm import tqdm
-import numpy as np
 from skimage import exposure
 
 thispath = Path(__file__).resolve()
@@ -48,10 +47,16 @@ def normalization(dataset_choice):
         )
 
 
-if __name__ == "__main__":
-    # bias_field_correction('Training')
-    # bias_field_correction('Validation')
-    # bias_field_correction('Test')
+def main():
+    # Preprocessing
+    bias_field_correction('Training')
+    bias_field_correction('Validation')
+    bias_field_correction('Test')
     normalization('Training')
     normalization('Validation')
     normalization('Test')
+
+
+if __name__ == "__main__":
+    main()
+
